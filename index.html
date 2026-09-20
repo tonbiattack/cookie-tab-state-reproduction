@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cookie とタブ状態管理</title>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="page-header">
+        <p class="eyebrow">TAB STATE REPRODUCTION</p>
+        <h1>Cookie とタブ状態管理</h1>
+        <p>検索状態の保存先による、複数タブでの表示の違いを確認できます。</p>
+      </header>
+
+      <section class="mode-panel" aria-labelledby="mode-heading">
+        <h2 id="mode-heading">検証モード</h2>
+        <div class="mode-options">
+          <label>
+            <input type="radio" name="mode" value="cookie" checked />
+            <strong>不具合を再現</strong>
+            <span>Cookie を読み、別タブの最後の検索状態を表示します。</span>
+          </label>
+          <label>
+            <input type="radio" name="mode" value="isolated" />
+            <strong>修正後を検証</strong>
+            <span>メモリと sessionStorage を使い、タブごとの状態を維持します。</span>
+          </label>
+        </div>
+      </section>
+
+      <section class="operation-panel" aria-labelledby="search-heading">
+        <h2 id="search-heading">顧客検索</h2>
+        <label for="search-input">検索条件</label>
+        <div class="search-row">
+          <input id="search-input" type="text" autocomplete="off" />
+          <button id="search-button" type="button">検索</button>
+        </div>
+        <p id="saved-state" class="saved-state" aria-live="polite"></p>
+        <div class="actions">
+          <button id="detail-button" type="button">詳細を開く</button>
+          <button id="clear-button" class="quiet" type="button">状態をクリア</button>
+        </div>
+      </section>
+
+      <section id="detail-panel" class="detail-panel" aria-labelledby="detail-heading" hidden>
+        <h2 id="detail-heading">詳細</h2>
+        <dl>
+          <div>
+            <dt>顧客 ID</dt>
+            <dd id="customer-id"></dd>
+          </div>
+          <div>
+            <dt>状態の取得元</dt>
+            <dd id="state-source"></dd>
+          </div>
+        </dl>
+        <p id="detail-explanation"></p>
+      </section>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
