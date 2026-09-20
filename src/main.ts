@@ -3,7 +3,7 @@ import "./style.css";
 type Mode = "cookie" | "isolated";
 
 type PendingSearchState = {
-  customerId: string;
+  recordId: string;
   searchInput: string;
   source: "search";
 };
@@ -18,7 +18,7 @@ const detailButton = requiredElement<HTMLButtonElement>("detail-button");
 const clearButton = requiredElement<HTMLButtonElement>("clear-button");
 const savedState = requiredElement<HTMLParagraphElement>("saved-state");
 const detailPanel = requiredElement<HTMLElement>("detail-panel");
-const customerId = requiredElement<HTMLElement>("customer-id");
+const recordId = requiredElement<HTMLElement>("record-id");
 const stateSource = requiredElement<HTMLElement>("state-source");
 const detailExplanation = requiredElement<HTMLParagraphElement>("detail-explanation");
 
@@ -82,7 +82,7 @@ function parseState(raw: string | null): PendingSearchState | null {
   try {
     const candidate = JSON.parse(raw) as Partial<PendingSearchState>;
     if (
-      typeof candidate.customerId !== "string" ||
+      typeof candidate.recordId !== "string" ||
       typeof candidate.searchInput !== "string" ||
       candidate.source !== "search"
     ) {
@@ -105,19 +105,19 @@ function hydrateIsolatedTab(): void {
 function renderSavedState(): void {
   const state = currentMode() === "cookie" ? readCookieState() : memoryState ?? readSessionState();
   savedState.textContent = state
-    ? `保存済み: ${state.customerId} (${currentMode() === "cookie" ? "Cookieは他タブと共有" : "このタブに限定"})`
+    ? `保存済み: ${state.recordId} (${currentMode() === "cookie" ? "Cookieは他タブと共有" : "このタブに限定"})`
     : "まだ検索状態はありません。";
 }
 
 function runSearch(): void {
-  const customer = input.value.trim();
-  if (!customer) {
+  const record = input.value.trim();
+  if (!record) {
     savedState.textContent = "検索条件を入力してください。";
     input.focus();
     return;
   }
 
-  const state: PendingSearchState = { customerId: customer, searchInput: customer, source: "search" };
+  const state: PendingSearchState = { recordId: record, searchInput: record, source: "search" };
   if (currentMode() === "cookie") {
     saveCookieState(state);
   } else {
@@ -134,13 +134,13 @@ function showDetail(): void {
   detailPanel.hidden = false;
 
   if (!state) {
-    customerId.textContent = "状態なし";
+    recordId.textContent = "状態なし";
     stateSource.textContent = "該当なし";
     detailExplanation.textContent = "検索画面で状態を保存してから詳細を開いてください。";
     return;
   }
 
-  customerId.textContent = state.customerId;
+  recordId.textContent = state.recordId;
   stateSource.textContent = mode === "cookie" ? "Cookie（同一オリジンのタブ間で共有）" : "メモリ（このタブだけ）";
   detailExplanation.textContent = mode === "cookie"
     ? "詳細表示の時点でCookieを読むため、別タブが最後に保存した値が表示されます。"
